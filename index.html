@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luke Davis — Information Security Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:          #300a24;
+    --bg2:         #1a0614;
+    --bg3:         #3d0d2e;
+    --surface:     #2c0a20;
+    --orange:      #E95420;
+    --orange-dim:  #c0440f;
+    --orange-dark: #5c1a06;
+    --purple:      #ad7fa8;
+    --purple-dim:  #75507b;
+    --white:       #eeeeec;
+    --grey:        #d3d7cf;
+    --grey-muted:  #888a85;
+    --grey-dark:   #555753;
+    --green:       #8ae234;
+    --green-dim:   #4e9a06;
+    --yellow:      #fce94f;
+    --blue:        #729fcf;
+    --red:         #ef2929;
+    --border:      #5c1a44;
+    --border-dim:  #3d1030;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--grey);
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    height: 46px;
+    background: #1a0614;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+  }
+
+  .nav-logo { font-size: 14px; text-decoration: none; }
+  .u-user { color: var(--green); font-weight: 700; }
+  .u-at   { color: var(--grey-muted); }
+  .u-host { color: var(--blue); font-weight: 700; }
+  .u-path { color: var(--blue); }
+  .u-sym  { color: var(--orange); font-weight: 700; }
+  .u-cur  {
+    display: inline-block; width: 9px; height: 14px;
+    background: var(--grey); vertical-align: middle; margin-left: 3px;
+    animation: blink 1.1s step-end infinite;
+  }
+
+  .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+  .nav-links a { font-size: 13px; color: var(--grey-muted); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--orange); }
+
+  .nav-pill {
+    font-size: 11px;
+    background: var(--orange-dark);
+    color: var(--orange);
+    border: 1px solid var(--orange-dim);
+    padding: 2px 10px;
+    letter-spacing: 1px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .pill-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+  }
+
+  .prompt-block {
+    margin-bottom: 3px; font-size: 14px;
+    opacity: 0; animation: fadeIn 0.25s ease forwards;
+  }
+  .prompt-block:nth-child(1) { animation-delay: 0.1s; }
+  .prompt-block:nth-child(2) { animation-delay: 0.35s; }
+  .prompt-block:nth-child(3) { animation-delay: 0.6s; }
+  .prompt-block:nth-child(4) { animation-delay: 0.85s; }
+  .prompt-block:nth-child(5) { animation-delay: 1.1s; }
+  .prompt-block:nth-child(6) { animation-delay: 1.35s; }
+
+  .p-user { color: var(--green); font-weight: 700; }
+  .p-at   { color: var(--grey-muted); }
+  .p-host { color: var(--blue); font-weight: 700; }
+  .p-path { color: var(--blue); }
+  .p-sym  { color: var(--orange); font-weight: 700; }
+  .p-cmd  { color: var(--white); }
+  .p-out  { color: var(--grey-muted); }
+  .p-ok   { color: var(--green); }
+
+  .hero-name {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: clamp(44px, 9vw, 88px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.05;
+    margin: 2rem 0 0.25rem;
+    letter-spacing: -1px;
+    opacity: 0;
+    animation: fadeIn 0.6s ease 1.7s forwards;
+  }
+  .hero-name strong { color: var(--orange); font-weight: 500; }
+
+  .hero-title {
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 15px;
+    color: var(--purple);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeIn 0.6s ease 2s forwards;
+  }
+
+  .hero-desc {
+    max-width: 580px;
+    color: var(--grey);
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeIn 0.6s ease 2.3s forwards;
+    border-left: 3px solid var(--orange-dark);
+    padding-left: 1.25rem;
+  }
+  .hero-desc strong { color: var(--orange); font-weight: 400; }
+
+  .hero-cta {
+    display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap;
+    opacity: 0; animation: fadeIn 0.5s ease 2.6s forwards;
+  }
+
+  .btn {
+    font-family: 'Ubuntu Mono', monospace; font-size: 13px; letter-spacing: 1px;
+    text-decoration: none; padding: 9px 22px;
+    border: 1px solid var(--orange-dim); color: var(--orange);
+    background: transparent; cursor: pointer; transition: all 0.18s; display: inline-block;
+  }
+  .btn:hover { background: var(--orange-dark); border-color: var(--orange); color: var(--white); }
+  .btn-ghost { border-color: var(--border); color: var(--grey-muted); }
+  .btn-ghost:hover { background: var(--bg3); border-color: var(--grey-dark); color: var(--grey); }
+
+  /* SECTIONS */
+  section {
+    max-width: 860px; margin: 0 auto;
+    padding: 5rem 2rem;
+    border-top: 1px solid var(--border-dim);
+  }
+
+  .sec-label {
+    font-size: 11px; color: var(--grey-dark);
+    letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.4rem;
+  }
+  .sec-label::before { content: '# '; color: var(--orange-dim); }
+
+  h2 {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 28px; font-weight: 400;
+    color: var(--white); margin-bottom: 2.5rem; letter-spacing: -0.5px;
+  }
+  h2 span { color: var(--orange); }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 340px; gap: 3rem; align-items: start;
+  }
+
+  .about-text p {
+    font-family: 'Ubuntu', sans-serif; font-weight: 300;
+    font-size: 15px; color: var(--grey); margin-bottom: 1rem; line-height: 1.8;
+  }
+
+  .term-window {
+    background: #1a0614;
+    border: 1px solid var(--border);
+    border-radius: 6px 6px 4px 4px;
+    overflow: hidden;
+  }
+
+  .term-titlebar {
+    background: #2c0a20; padding: 8px 12px;
+    display: flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .term-btn { width: 12px; height: 12px; border-radius: 50%; }
+  .tb-close { background: #e25656; }
+  .tb-min   { background: #e2b856; }
+  .tb-max   { background: #56c14e; }
+  .term-title { flex: 1; text-align: center; font-size: 12px; color: var(--grey-muted); }
+
+  .term-body { padding: 14px 16px; font-size: 13px; line-height: 2; }
+  .tl { display: block; }
+  .tl .k { color: var(--purple); }
+  .tl .v { color: var(--white); }
+  .tl .s { color: var(--green); }
+  .tl .n { color: var(--yellow); }
+  .tl .c { color: var(--grey-dark); }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1px; background: var(--border-dim);
+    border: 1px solid var(--border); margin-bottom: 2.5rem;
+  }
+
+  .sk-block { background: var(--bg); padding: 1.4rem; transition: background 0.15s; }
+  .sk-block:hover { background: var(--bg3); }
+  .sk-icon { font-size: 11px; color: var(--orange); letter-spacing: 2px; margin-bottom: 8px; display: block; }
+  .sk-name { font-size: 13px; color: var(--white); letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
+  .sk-desc { font-family: 'Ubuntu', sans-serif; font-size: 13px; color: var(--grey-muted); font-weight: 300; line-height: 1.5; }
+
+  .tag-cloud { display: flex; flex-wrap: wrap; gap: 7px; }
+  .tag {
+    font-size: 12px; color: var(--grey); border: 1px solid var(--border);
+    padding: 3px 10px; background: var(--surface); transition: all 0.15s; letter-spacing: 0.5px;
+  }
+  .tag:hover { border-color: var(--orange-dim); color: var(--orange); background: var(--orange-dark); }
+  .tag.purple { color: var(--purple); border-color: var(--purple-dim); background: rgba(117,80,123,0.1); }
+  .tag.purple:hover { background: rgba(117,80,123,0.2); }
+
+  /* CONTACT */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+
+  .contact-links { display: flex; flex-direction: column; gap: 8px; }
+  .contact-link {
+    font-family: 'Ubuntu Mono', monospace; font-size: 13px; color: var(--grey-muted);
+    text-decoration: none; display: flex; align-items: center;
+    padding: 9px 14px; border: 1px solid var(--border-dim); transition: all 0.15s;
+  }
+  .contact-link:hover { color: var(--white); border-color: var(--orange-dim); background: var(--surface); }
+  .cl-sym  { color: var(--green); margin-right: 4px; }
+  .cl-type { color: var(--blue); min-width: 88px; }
+  .cl-val  { color: var(--grey); }
+  .contact-link:hover .cl-val { color: var(--orange); }
+
+  .recruiter-box { background: var(--surface); border: 1px solid var(--border); padding: 1.75rem; }
+  .recruiter-box p { font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 300; color: var(--grey-muted); margin-bottom: 1.25rem; line-height: 1.7; }
+
+  .rec-snippet {
+    background: #1a0614; border: 1px solid var(--border-dim);
+    padding: 12px 14px; font-size: 12px; line-height: 2; margin-bottom: 1.5rem;
+  }
+  .rs-key { color: var(--orange); }
+  .rs-val { color: var(--grey); }
+  .rs-no  { color: var(--red); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border-dim); padding: 1.5rem 2rem;
+    max-width: 860px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; font-size: 12px;
+  }
+  .foot-r { color: var(--grey-dark); }
+
+  /* ANIMATIONS */
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+  @media (max-width: 680px) {
+    .about-grid, .contact-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="nav-logo">
+    <span class="u-user">luke</span><span class="u-at">@</span><span class="u-host">ubuntu</span><span class="u-at">:</span><span class="u-path">~</span><span class="u-sym">$</span><span class="u-cur"></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+  <div class="nav-pill">
+    <div class="pill-dot"></div>
+    AVAILABLE
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="prompt-block">
+    <span class="p-user">luke</span><span class="p-at">@</span><span class="p-host">ubuntu</span><span class="p-at">:</span><span class="p-path">~</span><span class="p-sym">$</span>
+    <span class="p-cmd"> uname -a</span>
+  </div>
+  <div class="prompt-block">
+    <span class="p-out">Linux ubuntu 6.8.0-security #1 SMP x86_64 GNU/Linux</span>
+  </div>
+  <div class="prompt-block">
+    <span class="p-user">luke</span><span class="p-at">@</span><span class="p-host">ubuntu</span><span class="p-at">:</span><span class="p-path">~</span><span class="p-sym">$</span>
+    <span class="p-cmd"> sudo systemctl status analyst.service</span>
+  </div>
+  <div class="prompt-block">
+    <span class="p-ok">●</span> <span class="p-out">analyst.service — Information Security Analyst</span>
+  </div>
+  <div class="prompt-block">
+    <span class="p-out">&nbsp;&nbsp;&nbsp;Loaded: loaded (/etc/profile.d/luke-davis.conf)</span>
+  </div>
+  <div class="prompt-block">
+    <span class="p-ok">&nbsp;&nbsp;&nbsp;Active: active (running)</span>
+    <span class="p-out"> — SecOps · GRC · Azure · Zero Trust</span>
+  </div>
+
+  <div class="hero-name">Luke <strong>Davis</strong></div>
+  <div class="hero-title">Information Security Analyst</div>
+
+  <div class="hero-desc">
+    Security professional specialising in <strong>SecOps</strong>, <strong>GRC</strong>, and <strong>Azure cloud security</strong>. Defences built on Zero Trust principles — verify everything, trust nothing, log all of it.
+  </div>
+
+  <div class="hero-cta">
+    <a href="#contact" class="btn">$ ./contact.sh</a>
+    <a href="https://linkedin.com/in/yourprofile" target="_blank" class="btn btn-ghost">LinkedIn →</a>
+    <a href="resume.pdf" class="btn btn-ghost">Resume [PDF]</a>
+  </div>
+</section>
+
+<section id="about">
+  <div class="sec-label">01 — whoami</div>
+  <h2>About <span>Me</span></h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm an Information Security Analyst with experience across security operations, risk and compliance, and cloud-native security architecture. I've operated in fast-paced SOC environments and led GRC programmes across multiple sectors.</p>
+      <p>My focus is building security postures that are practical, measurable, and resilient — not checkbox compliance. Zero Trust isn't a buzzword in my work; it's the operating model.</p>
+      <p>When I'm not defending perimeters I'm reading threat intel, building home lab environments, and exploring the latest in cloud-native defence.</p>
+    </div>
+    <div class="term-window">
+      <div class="term-titlebar">
+        <div class="term-btn tb-close"></div>
+        <div class="term-btn tb-min"></div>
+        <div class="term-btn tb-max"></div>
+        <div class="term-title">luke@ubuntu: ~/profile</div>
+      </div>
+      <div class="term-body">
+        <span class="tl"><span class="c">$ cat profile.json</span></span>
+        <span class="tl"><span class="c">{</span></span>
+        <span class="tl">&nbsp;<span class="k">"name"</span>:     <span class="s">"Luke Davis"</span>,</span>
+        <span class="tl">&nbsp;<span class="k">"role"</span>:     <span class="s">"Infosec Analyst"</span>,</span>
+        <span class="tl">&nbsp;<span class="k">"location"</span>: <span class="s">"[City, UK]"</span>,</span>
+        <span class="tl">&nbsp;<span class="k">"focus"</span>: [</span>
+        <span class="tl">&nbsp;&nbsp; <span class="s">"SecOps"</span>,</span>
+        <span class="tl">&nbsp;&nbsp; <span class="s">"GRC"</span>,</span>
+        <span class="tl">&nbsp;&nbsp; <span class="s">"Azure Security"</span>,</span>
+        <span class="tl">&nbsp;&nbsp; <span class="s">"Zero Trust"</span></span>
+        <span class="tl">&nbsp;],</span>
+        <span class="tl">&nbsp;<span class="k">"status"</span>: <span class="n">"AVAILABLE"</span></span>
+        <span class="tl"><span class="c">}</span></span>
+        <span class="tl">&nbsp;</span>
+        <span class="tl"><span class="p-user">luke</span><span style="color:var(--grey-muted)">@</span><span style="color:var(--blue)">ubuntu</span><span style="color:var(--grey-muted)">:~</span><span style="color:var(--orange);font-weight:700">$</span> <span style="display:inline-block;width:8px;height:13px;background:var(--grey);vertical-align:middle;animation:blink 1.1s step-end infinite;"></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="sec-label">02 — dpkg --list skills</div>
+  <h2>Skills &amp; <span>Capabilities</span></h2>
+
+  <div class="skills-grid">
+    <div class="sk-block">
+      <span class="sk-icon">▶ SECOPS</span>
+      <div class="sk-name">Security Operations</div>
+      <div class="sk-desc">SOC operations, incident response, SIEM management, threat hunting, alert triage, playbook development.</div>
+    </div>
+    <div class="sk-block">
+      <span class="sk-icon">▶ GRC</span>
+      <div class="sk-name">Governance, Risk &amp; Compliance</div>
+      <div class="sk-desc">Risk assessments, policy authoring, ISO 27001, NIST CSF, Cyber Essentials, third-party risk, audit management.</div>
+    </div>
+    <div class="sk-block">
+      <span class="sk-icon">▶ AZURE</span>
+      <div class="sk-name">Azure Security</div>
+      <div class="sk-desc">Microsoft Defender XDR, Sentinel, Entra ID, Conditional Access, Defender for Cloud, secure landing zones.</div>
+    </div>
+    <div class="sk-block">
+      <span class="sk-icon">▶ ZT</span>
+      <div class="sk-name">Zero Trust</div>
+      <div class="sk-desc">Identity-first architecture, micro-segmentation, least-privilege access, continuous verification, ZTNA deployment.</div>
+    </div>
+  </div>
+
+  <div class="sec-label" style="margin-bottom:1rem;">apt list --installed</div>
+  <div class="tag-cloud">
+    <span class="tag">Microsoft Sentinel</span>
+    <span class="tag">Defender XDR</span>
+    <span class="tag">Entra ID</span>
+    <span class="tag">Azure Policy</span>
+    <span class="tag">Defender for Cloud</span>
+    <span class="tag">Splunk</span>
+    <span class="tag">KQL</span>
+    <span class="tag">PowerShell</span>
+    <span class="tag">ServiceNow GRC</span>
+    <span class="tag">Qualys</span>
+    <span class="tag">Nessus</span>
+    <span class="tag">Wireshark</span>
+    <span class="tag purple">ISO 27001</span>
+    <span class="tag purple">NIST CSF</span>
+    <span class="tag purple">Cyber Essentials</span>
+    <span class="tag purple">DORA</span>
+    <span class="tag purple">SOC 2</span>
+    <span class="tag">Python</span>
+    <span class="tag">Terraform</span>
+    <span class="tag">Git</span>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="sec-label">03 — curl contact</div>
+  <h2>Get In <span>Touch</span></h2>
+  <div class="contact-grid">
+    <div class="contact-links">
+      <a href="https://linkedin.com/in/yourprofile" target="_blank" class="contact-link">
+        <span class="cl-sym">$</span><span class="cl-type">linkedin</span><span class="cl-val">linkedin.com/in/yourprofile</span>
+      </a>
+      <a href="mailto:luke@email.com" class="contact-link">
+        <span class="cl-sym">$</span><span class="cl-type">email</span><span class="cl-val">luke@email.com</span>
+      </a>
+      <a href="https://github.com/yourhandle" target="_blank" class="contact-link">
+        <span class="cl-sym">$</span><span class="cl-type">github</span><span class="cl-val">github.com/yourhandle</span>
+      </a>
+      <a href="resume.pdf" class="contact-link">
+        <span class="cl-sym">$</span><span class="cl-type">resume</span><span class="cl-val">download PDF →</span>
+      </a>
+    </div>
+    <div class="recruiter-box">
+      <p>If you're a recruiter or hiring manager — here's the quick summary:</p>
+      <div class="rec-snippet">
+        <span class="rs-key">OPEN_TO</span>=<span class="rs-val">"SecOps, GRC, Cloud Security"</span><br>
+        <span class="rs-key">PREFERRED</span>=<span class="rs-val">"Hybrid / Remote"</span><br>
+        <span class="rs-key">SECTORS</span>=<span class="rs-val">"FinTech, Gov, CNI"</span><br>
+        <span class="rs-key">NOT_FOR</span>=<span class="rs-no">"helpdesk, non-security roles"</span><br>
+        <span class="rs-key">NOTICE</span>=<span class="rs-val">"[X weeks / immediate]"</span>
+      </div>
+      <a href="https://linkedin.com/in/yourprofile" target="_blank" class="btn">Connect on LinkedIn →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <span class="p-user">luke</span><span style="color:var(--grey-dark)">@</span><span style="color:var(--blue)">ubuntu</span><span style="color:var(--grey-dark)">:</span><span style="color:var(--blue)">~</span><span style="color:var(--orange);font-weight:700">$</span>
+    <span style="color:var(--grey-dark)"> exit 0</span>
+  </div>
+  <div class="foot-r" id="yr"></div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = '© Luke Davis ' + new Date().getFullYear();
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('section:not(#hero)').forEach(s => {
+    s.style.opacity = '0';
+    s.style.transform = 'translateY(16px)';
+    s.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+    obs.observe(s);
+  });
+</script>
+</body>
+</html>
